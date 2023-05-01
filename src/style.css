@@ -6,10 +6,3 @@ body {
 #map {
     height: 100%;
 }
-body {
-    opacity: 0;
-}
-.unhide {
-    opacity: 1;
-    transition: opacity 0.5s ease-out;
-}

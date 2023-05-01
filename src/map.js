@@ -1,13 +1,5 @@
-
-function unhide() {
-    document.body.setAttribute("class", "unhide")
-}
-function hide() {
-    document.body.removeAttribute("class")
-}
-
 // Create a new map instance centered on a specific location
-var map = L.map('map').setView([50.941357, 6.958307], 13);
+var map = L.map('map').setView([50.941357, 6.958307], 14);
 var user = L.icon({
     iconUrl: 'http://leafletjs.com/examples/custom-icons/leaf-green.png',
     shadowUrl: 'http://leafletjs.com/examples/custom-icons/leaf-shadow.png',
@@ -20,19 +12,10 @@ var user = L.icon({
 // Add a tile layer to the map
 var OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-    maxZoom: 18,
-    minZoom: 1,
+    maxZoom: 19,
     noWrap: true,
-    detectRetina: true,
-    reuseTiles: true
 }).addTo(map);
-var OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-    maxZoom: 18,
-    minZoom: 10,
-    noWrap: true,
-    reuseTiles: true
-}).addTo(map);
+
 
 
 
@@ -46,45 +29,44 @@ fetch('data/data.json')
         var markerCluster = L.markerClusterGroup();
         markerCluster.addLayers(markers);
         map.addLayer(markerCluster);
-        //console.log(data); // Log the JSON data for debugging
+        console.log(data); // Log the JSON data for debugging
         // Extract the coordinates from the JSON data
-        // var heatmapData = data.map(item => {
-        //     return {
-        //         lat: item.coordinates[0],
-        //         lng: item.coordinates[1],
-        //         name: item.name,
-        //     };
-        // });
-        // console.log(heatmapData); // Log the heatmap data for debugging
+        var heatmapData = data.map(item => {
+            return {
+                lat: item.coordinates[0],
+                lng: item.coordinates[1],
+                name: item.name,
+            };
+        });
+        console.log(heatmapData); // Log the heatmap data for debugging
         // Create a heatmap layer and add it to the map
-        // L.heatLayer(heatmapData, {
-        //     // Use a function to map signal strength to opacity and intensity
-        //     // Assumes signal strength is in dBm
-        //     // Based on approximations of 2.4GHz Wi-Fi signal strength
-        //     // See https://www.metageek.com/training/resources/wifi-signal-strength-basics.html
-        //     minOpacity: 0.5,
-        //     maxZoom: 15,
-        //     radius: 40,
-        //     blur: 20,
-        // })
-        //     .addTo(map);
-        var radiuses = data.map(item => {
+        L.heatLayer(heatmapData, {
+            // Use a function to map signal strength to opacity and intensity
+            // Assumes signal strength is in dBm
+            // Based on approximations of 2.4GHz Wi-Fi signal strength
+            // See https://www.metageek.com/training/resources/wifi-signal-strength-basics.html
+            minOpacity: 0.01,
+            maxOpacity: 1,
+            radius: 40,
+            blur: 20,
+            maxZoom: 16,
+
+        })
+            .addTo(map);
+
+
+        var circles = data.map(item => {
             return L.circle([item.coordinates[0], item.coordinates[1]], {
                 radius: 50,
+                minZoom: 17,
+                opacity: 0.2,
                 color: [
-                    'rgba(255, 0, 0, 0.4)',
-                    'rgba(255, 255, 0, 0.5)',
-                    'rgba(0, 255, 0, 0.6)',
-                    'rgba(0, 255, 255, 0.7)',
-                    'rgba(0, 0, 255, 0.8)',
-                    'rgba(255, 0, 255, 0.9)',
                     'rgba(255, 0, 0, 1)'
                 ]
             });
         });
-
         // Add the circles to the map
-        radiuses.forEach(circle => {
+        circles.forEach(circle => {
             circle.addTo(map);
         });
 
@@ -115,7 +97,7 @@ function onLocationFound(e) {
 
 
 function onLocationError(e) {
-    alert(e.message);
+    console.log(e.message);
 }
 
 map.on('locationfound', onLocationFound);
@@ -129,4 +111,3 @@ function locate() {
 // call locate every 3 seconds... forever
 setInterval(locate, 3000);
 locate()
-unhide();
