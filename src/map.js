@@ -37,7 +37,7 @@ var OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 // Load the JSON file
-fetch('/data/data.json')
+fetch('data/data.json')
     .then(response => response.json())
     .then(data => {
         var markers = data.map(item => {
