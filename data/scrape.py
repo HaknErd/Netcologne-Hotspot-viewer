@@ -22,7 +22,7 @@ def process(data):
         result.append({'coordinates': coordinates, 'name': name})
 
     # write the result to a new file in JSON format
-    with open('data.json', 'w') as f:
+    with open('/data/data.json', 'w') as f:
         json.dump(result, f)
 
 if response.ok:
